@@ -26,3 +26,9 @@ class EmployeeSerializer(serializers.Serializer):
         instance.role = validated_data.get('role', instance.role)
         instance.save()
         return instance
+
+    def validate_email(self, value):
+        qs = Employee.objects.filter(email__iexact=value)
+        if qs.exists():
+            raise serializers.ValidationError("Email Should be unique")
+        return value
